@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
@@ -38,6 +39,7 @@ export default function SelectNumbersPage() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const router = useRouter()
 
   const { user, loading: authLoading } = useAuth()
 
@@ -89,9 +91,9 @@ export default function SelectNumbersPage() {
       })
 
       if (response.ok) {
-        // Refresh numbers data
-        fetchRaffleData()
-        setSelectedNumber(null)
+        router.push(`/payment/${numberId}`)
+      } else {
+        console.error("Error reserving number")
       }
     } catch (error) {
       console.error("Error reserving number:", error)

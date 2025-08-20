@@ -139,7 +139,7 @@ export function NumberDetails({ selectedNumber, raffle, onReserve, onClose }: Nu
               Reservar Número
             </Button>
             <p className="text-xs text-muted-foreground text-center">
-              Al reservar, tendrás 15 minutos para completar el pago antes de que el número vuelva a estar disponible.
+              Al reservar, tendrás 6 horas para completar el pago antes de que el número vuelva a estar disponible.
             </p>
           </div>
         ) : (
