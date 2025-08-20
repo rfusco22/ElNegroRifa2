@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { PaymentForm } from "./payment-form"
-import { Smartphone, Bitcoin, DollarSign } from "lucide-react"
+import { Smartphone, Bitcoin, DollarSign, Banknote } from "lucide-react"
 
 interface PaymentMethod {
   id: number
@@ -37,6 +37,8 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
         return <Bitcoin className="h-6 w-6" />
       case "zelle":
         return <DollarSign className="h-6 w-6" />
+      case "efectivo":
+        return <Banknote className="h-6 w-6" />
       default:
         return <DollarSign className="h-6 w-6" />
     }
@@ -50,6 +52,8 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
         return "Binance"
       case "zelle":
         return "Zelle"
+      case "efectivo":
+        return "Efectivo (Presencial)"
       default:
         return methodName
     }
@@ -63,6 +67,8 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
         return "bg-yellow-100 text-yellow-800 border-yellow-300"
       case "zelle":
         return "bg-purple-100 text-purple-800 border-purple-300"
+      case "efectivo":
+        return "bg-green-100 text-green-800 border-green-300"
       default:
         return "bg-gray-100 text-gray-800 border-gray-300"
     }
@@ -83,7 +89,7 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
     <div>
       <h2 className="text-2xl font-bold text-foreground mb-6">Selecciona tu Método de Pago</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {paymentMethods.map((method) => (
           <Card
             key={method.id}
@@ -116,10 +122,10 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
                 {method.method_name === "binance" && (
                   <>
                     <p className="text-sm text-muted-foreground">
-                      <strong>Email:</strong> {method.account_info.email}
+                      <strong>User ID:</strong> {method.account_info.user_id}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      <strong>User ID:</strong> {method.account_info.user_id}
+                      <strong>Email:</strong> {method.account_info.email}
                     </p>
                   </>
                 )}
@@ -131,6 +137,14 @@ export function PaymentMethods({ paymentMethods, numberDetails, onPaymentSubmitt
                     <p className="text-sm text-muted-foreground">
                       <strong>Nombre:</strong> {method.account_info.name}
                     </p>
+                  </>
+                )}
+                {method.method_name === "efectivo" && (
+                  <>
+                    <p className="text-sm text-muted-foreground">
+                      <strong>WhatsApp:</strong> {method.account_info.whatsapp}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Contactar para coordinar encuentro</p>
                   </>
                 )}
               </div>

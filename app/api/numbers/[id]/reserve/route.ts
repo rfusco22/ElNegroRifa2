@@ -64,7 +64,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     return NextResponse.json({
       message: "Número reservado exitosamente",
       number: reservedNumber[0],
-      expires_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(), // 15 minutes from now
+      expires_at: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 hours from now
     })
   } catch (error) {
     console.error("Error reserving number:", error)

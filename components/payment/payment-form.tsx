@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Upload, Check, AlertCircle } from "lucide-react"
+import { ArrowLeft, Upload, Check, AlertCircle, MessageCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 interface PaymentMethod {
@@ -144,6 +144,8 @@ export function PaymentForm({ paymentMethod, numberDetails, onBack, onPaymentSub
         return "Binance"
       case "zelle":
         return "Zelle"
+      case "efectivo":
+        return "Efectivo (Presencial)"
       default:
         return methodName
     }
@@ -163,6 +165,44 @@ export function PaymentForm({ paymentMethod, numberDetails, onBack, onPaymentSub
           <Badge className="bg-yellow-100 text-yellow-800">Pendiente de Validación</Badge>
         </CardContent>
       </Card>
+    )
+  }
+
+  if (paymentMethod.method_name === "efectivo") {
+    return (
+      <div>
+        <Button variant="ghost" className="mb-6" onClick={onBack}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Cambiar Método de Pago
+        </Button>
+
+        <Card className="max-w-md mx-auto">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="h-8 w-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-2">Pago en Efectivo</h3>
+            <p className="text-muted-foreground mb-4">
+              Para realizar el pago en efectivo, contacta por WhatsApp para coordinar el encuentro.
+            </p>
+            <div className="bg-primary/10 p-4 rounded-lg mb-4">
+              <p className="text-2xl font-bold text-primary">{numberDetails.ticket_price} Bs</p>
+              <p className="text-sm text-muted-foreground">Número: {numberDetails.number}</p>
+            </div>
+            <Button
+              className="w-full bg-green-500 hover:bg-green-600"
+              onClick={() => {
+                const message = `Hola! Quiero pagar en efectivo el número ${numberDetails.number} de ${numberDetails.raffle_title}. Monto: ${numberDetails.ticket_price} Bs`
+                const encodedMessage = encodeURIComponent(message)
+                window.open(`https://wa.me/58963830808?text=${encodedMessage}`, "_blank")
+              }}
+            >
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Contactar por WhatsApp
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
@@ -203,10 +243,10 @@ export function PaymentForm({ paymentMethod, numberDetails, onBack, onPaymentSub
               {paymentMethod.method_name === "binance" && (
                 <div className="space-y-1 text-sm">
                   <p>
-                    <strong>Email:</strong> {paymentMethod.account_info.email}
+                    <strong>User ID:</strong> {paymentMethod.account_info.user_id}
                   </p>
                   <p>
-                    <strong>User ID:</strong> {paymentMethod.account_info.user_id}
+                    <strong>Email:</strong> {paymentMethod.account_info.email}
                   </p>
                 </div>
               )}
@@ -237,6 +277,7 @@ export function PaymentForm({ paymentMethod, numberDetails, onBack, onPaymentSub
                     <li>Realiza la transferencia por el monto exacto</li>
                     <li>Guarda el comprobante de la transferencia</li>
                     <li>Sube una foto clara del comprobante</li>
+                    <li>Tienes 6 horas para completar el pago</li>
                     <li>Tu número será confirmado una vez validado el pago</li>
                   </ul>
                 </div>

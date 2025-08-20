@@ -198,7 +198,7 @@ export default function MyNumbersPage() {
                         Proceder al Pago
                       </Button>
                       <p className="text-xs text-muted-foreground text-center mt-2">
-                        Completa el pago antes de que expire la reserva
+                        Tienes 6 horas para completar el pago antes de que expire la reserva
                       </p>
                     </div>
                   )}
