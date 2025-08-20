@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 export function WhatsAppButton() {
   const [isOpen, setIsOpen] = useState(false)
 
-  const whatsappNumber = "+58963830808" // Número de WhatsApp de contacto
+  const whatsappNumber = "0412963830808" // Número de WhatsApp de contacto
   const message = "¡Hola! Me interesa participar en las Rifas El Negro. ¿Podrían ayudarme?"
 
   const openWhatsApp = () => {
