@@ -1,29 +1,27 @@
-"use client"
+'use client'
 
-import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
-import type { User } from "@/lib/auth"
+import { createContext, useContext, useEffect, useState } from 'react'
+
+interface User {
+  id: number
+  name: string
+  email: string
+  phone: string
+  role: 'user' | 'admin'
+}
 
 interface AuthContextType {
   user: User | null
-  login: (email: string, password: string) => Promise<boolean>
-  register: (userData: RegisterData) => Promise<boolean>
+  login: (user: User) => void
   logout: () => void
-  loading: boolean
-}
-
-interface RegisterData {
-  email: string
-  password: string
-  full_name: string
-  phone?: string
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     checkAuth()
@@ -31,90 +29,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      const token = localStorage.getItem("auth_token")
-      if (!token) {
-        setLoading(false)
-        return
-      }
-
-      const response = await fetch("/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
+      const response = await fetch('/api/auth/me')
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)
-      } else {
-        localStorage.removeItem("auth_token")
       }
     } catch (error) {
-      console.error("Auth check error:", error)
-      localStorage.removeItem("auth_token")
+      console.error('Error checking auth:', error)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = (userData: User) => {
+    setUser(userData)
+  }
+
+  const logout = async () => {
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
-
-      if (response.ok) {
-        const { user, token } = await response.json()
-        localStorage.setItem("auth_token", token)
-        setUser(user)
-        return true
-      }
-      return false
+      await fetch('/api/auth/logout', { method: 'POST' })
     } catch (error) {
-      console.error("Login error:", error)
-      return false
+      console.error('Error logging out:', error)
+    } finally {
+      setUser(null)
     }
   }
 
-  const register = async (userData: RegisterData): Promise<boolean> => {
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      })
-
-      if (response.ok) {
-        const { user, token } = await response.json()
-        localStorage.setItem("auth_token", token)
-        setUser(user)
-        return true
-      }
-      return false
-    } catch (error) {
-      console.error("Register error:", error)
-      return false
-    }
-  }
-
-  const logout = () => {
-    localStorage.removeItem("auth_token")
-    setUser(null)
-  }
-
-  return <AuthContext.Provider value={{ user, login, register, logout, loading }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider")
+    throw new Error('useAuth must be used within an AuthProvider')
   }
   return context
 }
